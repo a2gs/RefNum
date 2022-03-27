@@ -16,7 +16,6 @@
 # Activate tracing:
 #set -x
 
-
 function test1()
 {
 	echo "$1 sleep $2"
@@ -24,6 +23,35 @@ function test1()
 	echo "$1 done!"
 }
 
+# ----------------------------------------------
+
+RNCMD_CMD="rncmd"
+
+if [ ! -e "$RNCMD_CMD" ];
+then
+	command -v "$RNCMD_CMD" >/dev/null 2>&1
+	RNCMD_CMD=$?
+
+	if [ "$RNCMD_CMD" != 0 ];
+	then
+		echo "There is no RefeNum command line. Aborting."
+		exit 1
+	fi
+fi
+
+# ----------------------------------------------
+
+NETCAT_CMD="nc"
+
+command -v "$NETCAT_CMD" >/dev/null 2>&1
+NC_EXIST=$?
+
+if [ "$NC_EXIST" != 0 ];
+then
+	echo "There is no netcat. Unable to test RefNum TCP server."
+fi
+
+# ----------------------------------------------
 
 echo "GETPID: $$"
 test1 "A" 7 &

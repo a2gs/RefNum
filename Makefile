@@ -37,4 +37,4 @@ rncmd: librefnum
 clean:
 	@echo
 	@echo "=== clean_data =============="
-	-$(RM) test librefnum.a core
+	-$(RM) rncmd librefnum.a core
