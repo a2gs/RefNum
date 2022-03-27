@@ -19,7 +19,7 @@ INCLUDEPATH = -I./
 LIBS = -lm -lpthread
 LIBPATH = -L./
 
-all: clean librefnum exectag
+all: clean librefnum rncmd
 
 librefnum:
 	@echo
@@ -29,10 +29,10 @@ librefnum:
 	$(RANLIB) libbtavl.a
 	-$(RM) refnum.o
 
-exectag: librefnum
+rncmd: librefnum
 	@echo
 	@echo "=== Compiling =============="
-	$(CC) -o test test.c -lrefnum $(CFLAGS) $(INCLUDEPATH) $(LIBPATH) $(LIBS)
+	$(CC) -o rncmd rncmd.c -lrefnum $(CFLAGS) $(INCLUDEPATH) $(LIBPATH) $(LIBS)
 
 clean:
 	@echo
