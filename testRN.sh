@@ -26,16 +26,31 @@ function test1()
 
 
 echo "GETPID: $$"
-test1 "A" 5 &
+test1 "A" 7 &
 PROC_A_PID=$!
-
 echo "PROC A PID: $PROC_A_PID"
 
 
+echo "GETPID: $$"
+test1 "B" 3 &
+PROC_B_PID=$!
+echo "PROC B PID: $PROC_B_PID"
 
+echo "GETPID: $$"
+test1 "C" 5 &
+PROC_C_PID=$!
+echo "PROC C PID: $PROC_C_PID"
 
+echo "GETPID: $$"
+test1 "D" 1 &
+PROC_D_PID=$!
+echo "PROC D PID: $PROC_D_PID"
 
 
 wait $PROC_A_PID
+wait $PROC_B_PID
+wait $PROC_C_PID
+wait $PROC_D_PID
+
 
 echo "ALL DONE!"
