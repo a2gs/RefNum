@@ -1,21 +1,6 @@
 /* Andre Augusto Giannotti Scota (https://sites.google.com/view/a2gs/) */
 
-
 /*
-
-LIB:
-rn_create()
-rn_destroy()
-rn_bind()
-
-long long rn_addAndGet()
-long long rn_get()
-rn_set(long long x)
-rn_lock()
-rn_unlock()
-
-
-
 
 Sample:
 
@@ -45,4 +30,9 @@ typedef struct{
 
 int rn_setup(char *rn_name, rn_ctx_t *rn_ctx, rn_erro_t *err);
 int rn_start(rn_ctx_t *rn_ctx, rn_erro_t *err); /* open or create */
-int rn_destroy();
+int rn_destroy(rn_ctx_t *rn_ctx, rn_erro_t *err);
+int rn_addAndGet(RN_TPYE *rn, rn_ctx_t *rn_ctx, rn_erro_t *err);
+int rn_get(RN_TPYE *rn, rn_ctx_t *rn_ctx, rn_erro_t *err);
+int rn_set(RN_TPYE *x, rn_ctx_t *rn_ctx, rn_erro_t *err);
+int rn_lock(rn_ctx_t *rn_ctx, rn_erro_t *err);
+int rn_unlock(rn_ctx_t *rn_ctx, rn_erro_t *err);

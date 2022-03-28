@@ -89,3 +89,28 @@ int rn_destroy(rn_ctx_t *rn_ctx, rn_erro_t *err)
 
 	return(RN_OK);
 }
+
+int rn_addAndGet(RN_TPYE *rn, rn_ctx_t *rn_ctx, rn_erro_t *err)
+{
+	return(RN_OK);
+}
+
+int rn_get(RN_TPYE *rn, rn_ctx_t *rn_ctx, rn_erro_t *err)
+{
+	return(RN_OK);
+}
+
+int rn_set(RN_TPYE *x, rn_ctx_t *rn_ctx, rn_erro_t *err)
+{
+	return(RN_OK);
+}
+
+int rn_lock(rn_ctx_t *rn_ctx, rn_erro_t *err)
+{
+	return(RN_OK);
+}
+
+int rn_unlock(rn_ctx_t *rn_ctx, rn_erro_t *err)
+{
+	return(RN_OK);
+}
