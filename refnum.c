@@ -81,10 +81,19 @@ int rn_start(rn_ctx_t *rn_ctx, rn_erro_t *err)
 	return(RN_OK);
 }
 
-int rn_destroy(rn_ctx_t *rn_ctx, rn_erro_t *err)
+int rn_end(rn_ctx_t *rn_ctx, rn_erro_t *err)
 {
 	sem_close(rn_ctx->sem);
 	close(rn_ctx->fdmem);
+
+	return(RN_OK);
+}
+
+int rn_delete(rn_ctx_t *rn_ctx, rn_erro_t *err)
+{
+	rn_end(rn_ctx, NULL);
+
+	sem_unlink(rn_ctx->sem);
 	shm_unlink(rn_ctx->name);
 
 	return(RN_OK);
