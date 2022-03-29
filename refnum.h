@@ -12,7 +12,7 @@ sample [-c][-d][-ga][-g][-s][-l][-u] "REFNUM NAME"
 #define RN_OK		(0)
 #define RN_ERRO		(1)
 
-#define RN_TPYE unsigned long long
+#define RN_TYPE unsigned long long
 
 typedef struct{
 	#define RN_ERRO_MSG_SZ		(300)
@@ -31,8 +31,8 @@ typedef struct{
 int rn_setup(char *rn_name, rn_ctx_t *rn_ctx, rn_erro_t *err);
 int rn_start(rn_ctx_t *rn_ctx, rn_erro_t *err); /* open or create */
 int rn_destroy(rn_ctx_t *rn_ctx, rn_erro_t *err);
-int rn_addAndGet(RN_TPYE *rn, rn_ctx_t *rn_ctx, rn_erro_t *err);
-int rn_get(RN_TPYE *rn, rn_ctx_t *rn_ctx, rn_erro_t *err);
-int rn_set(RN_TPYE *x, rn_ctx_t *rn_ctx, rn_erro_t *err);
+int rn_addAndGet(RN_TYPE *rn, rn_ctx_t *rn_ctx, rn_erro_t *err);
+int rn_get(RN_TYPE *rn, rn_ctx_t *rn_ctx, rn_erro_t *err);
+int rn_set(RN_TYPE *x, rn_ctx_t *rn_ctx, rn_erro_t *err);
 int rn_lock(rn_ctx_t *rn_ctx, rn_erro_t *err);
 int rn_unlock(rn_ctx_t *rn_ctx, rn_erro_t *err);
