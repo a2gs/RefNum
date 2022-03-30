@@ -68,12 +68,16 @@ void printHelp(char *exec)
 
 int main(int argc, char *argv[])
 {
-	if(!(argc == 3 || argc == 4)){
+	char opt = 0;
+
+	opt = argv[1][1];
+
+	if(argc != 3 && argc != 4){
 		printHelp(argv[0]);
 		return(1);
 	}
 
-	switch(argv[1][1]){
+	switch(opt){
 		case 'c':
 			rn_create(argv[2]);
 			break;

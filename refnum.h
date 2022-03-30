@@ -25,15 +25,15 @@ typedef struct{
 	char name[RN_NAME_SZ + 1];
 	sem_t *sem;
 	int fdmem;
-	unsigned long long *mem;
+	RN_TYPE *mem;
 }rn_ctx_t;
 
 int rn_setup(char *rn_name, rn_ctx_t *rn_ctx, rn_erro_t *err);
 int rn_start(rn_ctx_t *rn_ctx, rn_erro_t *err); /* open or create */
 int rn_end(rn_ctx_t *rn_ctx, rn_erro_t *err);
 int rn_delete(rn_ctx_t *rn_ctx, rn_erro_t *err)
-int rn_addAndGet(RN_TYPE *rn, rn_ctx_t *rn_ctx, rn_erro_t *err);
-int rn_get(RN_TYPE *rn, rn_ctx_t *rn_ctx, rn_erro_t *err);
-int rn_set(RN_TYPE *x, rn_ctx_t *rn_ctx, rn_erro_t *err);
+int rn_addAndGet(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn);
+int rn_get(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn);
+int rn_set(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn);
 int rn_lock(rn_ctx_t *rn_ctx, rn_erro_t *err);
 int rn_unlock(rn_ctx_t *rn_ctx, rn_erro_t *err);

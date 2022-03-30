@@ -99,18 +99,38 @@ int rn_delete(rn_ctx_t *rn_ctx, rn_erro_t *err)
 	return(RN_OK);
 }
 
-int rn_addAndGet(RN_TYPE *rn, rn_ctx_t *rn_ctx, rn_erro_t *err)
+int rn_addAndGet(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn)
 {
+	sem_wait(rn_ctx->sem);
+
+	*rn = rn_ctx->mem++;
+
+	sem_post(rn_ctx->sem);
+
 	return(RN_OK);
 }
 
-int rn_get(RN_TYPE *rn, rn_ctx_t *rn_ctx, rn_erro_t *err)
+int rn_get(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn)
 {
+	rn = rn_ctx->mem;
+
 	return(RN_OK);
 }
 
-int rn_set(RN_TYPE *x, rn_ctx_t *rn_ctx, rn_erro_t *err)
+int rn_set(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn)
 {
+	if(sem_wait(rn_ctx->sem)) == -1){
+		*err = errno;
+		return(SCB_SEMPH);
+	}
+
+	*rn_ctx->mem = *rn;
+
+	if(sem_post(rn_ctx->sem)) == -1){
+		*err = errno;
+		return(SCB_SEMPH);
+	}
+
 	return(RN_OK);
 }
 
