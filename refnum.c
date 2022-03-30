@@ -101,45 +101,59 @@ int rn_delete(rn_ctx_t *rn_ctx, rn_erro_t *err)
 
 int rn_addAndGet(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn)
 {
-	sem_wait(rn_ctx->sem);
+	if(rn_lock(rn_ctx, err) == RN_ERRO)
+		return(RN_ERRO);
 
 	*rn = rn_ctx->mem++;
 
-	sem_post(rn_ctx->sem);
+	rn_lock(rn_ctx, err) == RN_ERRO)
+		return(RN_ERRO);
 
 	return(RN_OK);
 }
 
 int rn_get(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn)
 {
-	rn = rn_ctx->mem;
+	*rn = *rn_ctx->mem;
 
 	return(RN_OK);
 }
 
 int rn_set(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn)
 {
-	if(sem_wait(rn_ctx->sem)) == -1){
-		*err = errno;
-		return(SCB_SEMPH);
-	}
+	if(rn_lock(rn_ctx, err) == RN_ERRO)
+		return(RN_ERRO);
 
 	*rn_ctx->mem = *rn;
 
-	if(sem_post(rn_ctx->sem)) == -1){
-		*err = errno;
-		return(SCB_SEMPH);
-	}
+	if(rn_lock(rn_ctx, err) == RN_ERRO)
+		return(RN_ERRO);
 
 	return(RN_OK);
 }
 
 int rn_lock(rn_ctx_t *rn_ctx, rn_erro_t *err)
 {
+	if(sem_wait(rn_ctx->sem)) == -1){
+
+		if(err != NULL)
+			__RN_SET_ERROR("sem_wait");
+
+		return(RN_ERRO);
+	}
+
 	return(RN_OK);
 }
 
 int rn_unlock(rn_ctx_t *rn_ctx, rn_erro_t *err)
 {
+	if(sem_post(rn_ctx->sem)) == -1){
+
+		if(err != NULL)
+			__RN_SET_ERROR("sem_post");
+
+		return(RN_ERRO);
+	}
+
 	return(RN_OK);
 }
