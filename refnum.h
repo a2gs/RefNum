@@ -31,7 +31,7 @@ typedef struct{
 int rn_setup(char *rn_name, rn_ctx_t *rn_ctx, rn_erro_t *err);
 int rn_start(rn_ctx_t *rn_ctx, rn_erro_t *err); /* open or create */
 int rn_end(rn_ctx_t *rn_ctx, rn_erro_t *err);
-int rn_delete(rn_ctx_t *rn_ctx, rn_erro_t *err)
+int rn_delete(rn_ctx_t *rn_ctx, rn_erro_t *err);
 int rn_addAndGet(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn);
 int rn_get(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn);
 int rn_set(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn);

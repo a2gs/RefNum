@@ -8,43 +8,43 @@
 
 #include "refnum.h"
 
-int rn_create(char *rn_name)
+int rncmd_create(char *rn_name)
 {
 	
 	return(0);
 }
 
-int rn_delete(char *rn_name)
+int rncmd_delete(char *rn_name)
 {
 	
 	return(0);
 }
 
-int rn_getAndAdd(char *rn_name)
+int rncmd_getAndAdd(char *rn_name)
 {
 	
 	return(0);
 }
 
-int rn_get(char *rn_name)
+int rncmd_get(char *rn_name)
 {
 	
 	return(0);
 }
 
-int rn_set(char *rn_name, RN_TYPE x)
+int rncmd_set(char *rn_name, RN_TYPE x)
 {
 	
 	return(0);
 }
 
-int rn_lock(char *rn_name)
+int rncmd_lock(char *rn_name)
 {
 	
 	return(0);
 }
 
-int rn_unlock(char *rn_name)
+int rncmd_unlock(char *rn_name)
 {
 	
 	return(0);
@@ -79,19 +79,19 @@ int main(int argc, char *argv[])
 
 	switch(opt){
 		case 'c':
-			rn_create(argv[2]);
+			rncmd_create(argv[2]);
 			break;
 
 		case 'd':
-			rn_delete(argv[2]);
+			rncmd_delete(argv[2]);
 			break;
 
 		case 'g':
-			rn_getAndAdd(argv[2]);
+			rncmd_getAndAdd(argv[2]);
 			break;
 
 		case 'G':
-			rn_get(argv[2]);
+			rncmd_get(argv[2]);
 			break;
 
 		case 's':
@@ -100,15 +100,15 @@ int main(int argc, char *argv[])
 				return(1);
 			}
 
-			rn_set(argv[2], atoi(argv[3]));
+			rncmd_set(argv[2], atoi(argv[3]));
 			break;
 
 		case 'l':
-			rn_lock(argv[2]);
+			rncmd_lock(argv[2]);
 			break;
 
 		case 'u':
-			rn_unlock(argv[2]);
+			rncmd_unlock(argv[2]);
 			break;
 
 		default:

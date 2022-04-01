@@ -44,7 +44,7 @@ int rn_start(rn_ctx_t *rn_ctx, rn_erro_t *err)
 		if(err != NULL)
 			__RN_SET_ERROR("sem_open");
 
-		rn_destroy(rn_ctx, NULL);
+		rn_delete(rn_ctx, NULL);
 		return(RN_ERRO);
 	}
 
@@ -54,7 +54,7 @@ int rn_start(rn_ctx_t *rn_ctx, rn_erro_t *err)
 		if(err != NULL)
 			__RN_SET_ERROR("shm_open");
 
-		rn_destroy(rn_ctx, NULL);
+		rn_delete(rn_ctx, NULL);
 		return(RN_ERRO);
 	}
 
@@ -62,16 +62,16 @@ int rn_start(rn_ctx_t *rn_ctx, rn_erro_t *err)
 		if(err != NULL)
 			__RN_SET_ERROR("ftruncate");
 
-		rn_destroy(rn_ctx, NULL);
+		rn_delete(rn_ctx, NULL);
 		return(RN_ERRO);
 	}
 
-	rn_ctx->mem = (RN_TYPE *)mmap(NULL, sizeof(unsigned long long), PROT_READ | PROT_WRITE, MAP_SHARED, rn_ctx->mem, 0);
+	rn_ctx->mem = (RN_TYPE *)mmap(NULL, sizeof(unsigned long long), PROT_READ | PROT_WRITE, MAP_SHARED, rn_ctx->fdmem, 0);
 	if(rn_ctx->mem == MAP_FAILED){
 		if(err != NULL)
 			__RN_SET_ERROR("mmap");
 
-		rn_destroy(rn_ctx, NULL);
+		rn_delete(rn_ctx, NULL);
 
 		return(RN_ERRO);
 	}
@@ -93,7 +93,7 @@ int rn_delete(rn_ctx_t *rn_ctx, rn_erro_t *err)
 {
 	rn_end(rn_ctx, NULL);
 
-	sem_unlink(rn_ctx->sem);
+	sem_unlink(rn_ctx->name);
 	shm_unlink(rn_ctx->name);
 
 	return(RN_OK);
