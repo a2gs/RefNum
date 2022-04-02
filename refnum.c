@@ -104,9 +104,9 @@ int rn_addAndGet(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn)
 	if(rn_lock(rn_ctx, err) == RN_ERRO)
 		return(RN_ERRO);
 
-	*rn = rn_ctx->mem++;
+	*rn = *rn_ctx->mem++;
 
-	rn_lock(rn_ctx, err) == RN_ERRO)
+	if(rn_lock(rn_ctx, err) == RN_ERRO)
 		return(RN_ERRO);
 
 	return(RN_OK);
@@ -134,7 +134,7 @@ int rn_set(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn)
 
 int rn_lock(rn_ctx_t *rn_ctx, rn_erro_t *err)
 {
-	if(sem_wait(rn_ctx->sem)) == -1){
+	if(sem_wait(rn_ctx->sem) == -1){
 
 		if(err != NULL)
 			__RN_SET_ERROR("sem_wait");
@@ -147,7 +147,7 @@ int rn_lock(rn_ctx_t *rn_ctx, rn_erro_t *err)
 
 int rn_unlock(rn_ctx_t *rn_ctx, rn_erro_t *err)
 {
-	if(sem_post(rn_ctx->sem)) == -1){
+	if(sem_post(rn_ctx->sem) == -1){
 
 		if(err != NULL)
 			__RN_SET_ERROR("sem_post");
