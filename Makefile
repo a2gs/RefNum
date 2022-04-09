@@ -3,7 +3,7 @@
 CFLAGS_OPTIMIZATION = -g
 #CFLAGS_OPTIMIZATION = -O3
 CFLAGS_VERSION = -std=c11
-CFLAGS_WARNINGS = -Wall -Wextra -Wno-unused-parameter -Wno-unused-but-set-parameter
+CFLAGS_WARNINGS = -Wall -Wextra -Wno-unused-parameter -Wno-unused-but-set-parameter -Wformat-truncation=0
 CFLAGS_DEFINES = -D_XOPEN_SOURCE=700 -D_POSIX_C_SOURCE=200809L -D_POSIX_SOURCE=1 -D_DEFAULT_SOURCE=1 -D_GNU_SOURCE=1 -DBTAVL_TRANSVERSAL=1 -DBTAVL_DEBUG
 CFLAGS = $(CFLAGS_OPTIMIZATION) $(CFLAGS_VERSION) $(CFLAGS_WARNINGS) $(CFLAGS_DEFINES)
 
@@ -25,8 +25,8 @@ librefnum:
 	@echo
 	@echo "=== librefnum ================="
 	$(CC) -o refnum.o -c refnum.c $(CFLAGS) $(LIBS)
-	$(AR) rc libbtavl.a refnum.o
-	$(RANLIB) libbtavl.a
+	$(AR) rc librefnum.a refnum.o
+	$(RANLIB) librefnum.a
 	-$(RM) refnum.o
 
 rncmd: librefnum

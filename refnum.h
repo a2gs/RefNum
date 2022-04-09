@@ -8,6 +8,7 @@ sample [-c][-d][-ga][-g][-s][-l][-u] "REFNUM NAME"
 
 */
 
+#include <semaphore.h>
 
 #define RN_OK		(0)
 #define RN_ERRO		(1)
