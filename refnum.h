@@ -1,13 +1,5 @@
 /* Andre Augusto Giannotti Scota (https://sites.google.com/view/a2gs/) */
 
-/*
-
-Sample:
-
-sample [-c][-d][-ga][-g][-s][-l][-u] "REFNUM NAME"
-
-*/
-
 #include <semaphore.h>
 
 #define RN_OK		(0)

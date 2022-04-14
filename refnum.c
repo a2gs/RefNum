@@ -2,7 +2,7 @@
  * andre.scota@gmail.com
  * https://sites.google.com/view/a2gs
  *
- * SCB - Shared Circular Buffer
+ * RefNum - A Shared reference number counter
  *
  * MIT License
  */
