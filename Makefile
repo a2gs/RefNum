@@ -19,7 +19,7 @@ INCLUDEPATH = -I./
 LIBS = -lm -lpthread
 LIBPATH = -L./
 
-all: clean librefnum rncmd
+all: clean librefnum rncmd rnsrv
 
 librefnum:
 	@echo
@@ -31,10 +31,15 @@ librefnum:
 
 rncmd: librefnum
 	@echo
-	@echo "=== Compiling =============="
+	@echo "=== Compiling cmdtool =============="
 	$(CC) -o rncmd rncmd.c -lrefnum $(CFLAGS) $(INCLUDEPATH) $(LIBPATH) $(LIBS)
+
+rnsrv: librefnum
+	@echo
+	@echo "=== Compiling server =============="
+	$(CC) -o rnsrv rnsrv.c -lrefnum $(CFLAGS) $(INCLUDEPATH) $(LIBPATH) $(LIBS)
 
 clean:
 	@echo
 	@echo "=== clean_data =============="
-	-$(RM) rncmd librefnum.a core
+	-$(RM) rncmd rnsrv librefnum.a core
