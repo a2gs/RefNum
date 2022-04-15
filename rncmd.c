@@ -18,9 +18,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 
 #include "refnum.h"
 
@@ -36,10 +33,21 @@ int rncmd_delete(char *rn_name)
 	return(0);
 }
 
-int rncmd_getAndAdd(char *rn_name)
+int rncmd_getAndAdd(char *rn_name, RN_TYPE *rn)
 {
+	rn_ctx_t rn_ctx = {0};
+	rn_erro_t err = {0};
 	
+	if(rn_setup(rn_name, &rn_ctx, &err) == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_getAndAdd;
+	if(rn_start(&rn_ctx, &err)          == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_getAndAdd;
+	if(rn_addAndGet(&rn_ctx, &err, rn)  == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_getAndAdd;
+	if(rn_end(&rn_ctx, &err)            == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_getAndAdd;
+
 	return(0);
+
+RN_NICE_ERROR_RETURN_rncmd_getAndAdd:
+	printf("ERRO: [%d]:[%s]", err.err, err.msg);
+	return(-1);
 }
 
 int rncmd_get(char *rn_name)
@@ -85,6 +93,7 @@ void printHelp(char *exec)
 int main(int argc, char *argv[])
 {
 	char opt = 0;
+	RN_TYPE x = 0;
 
 	opt = argv[1][1];
 
@@ -103,7 +112,9 @@ int main(int argc, char *argv[])
 			break;
 
 		case 'g':
-			rncmd_getAndAdd(argv[2]);
+			if(rncmd_getAndAdd(argv[2], &x) == -1)
+				return(1);
+
 			break;
 
 		case 'G':
