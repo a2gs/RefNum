@@ -126,12 +126,14 @@ int main(int argc, char *argv[])
 			if(rncmd_getAndAdd(argv[2], &x) == -1)
 				return(1);
 
+			printf("Get and Add: [%lld]\n", x);
 			break;
 
 		case 'G':
 			if(rncmd_get(argv[2], &x) == -1)
 				return(1);
 
+			printf("Get: [%lld]\n", x);
 			break;
 
 		case 's':
