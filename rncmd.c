@@ -67,10 +67,21 @@ RN_NICE_ERROR_RETURN_rncmd_get:
 	return(-1);
 }
 
-int rncmd_set(char *rn_name, RN_TYPE x)
+int rncmd_set(char *rn_name, RN_TYPE *rn)
 {
+	rn_ctx_t  rn_ctx = {0};
+	rn_erro_t err    = {0};
 	
+	if(rn_setup(rn_name, &rn_ctx, &err) == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_set;
+	if(rn_start(&rn_ctx, &err)          == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_set;
+	if(rn_set(&rn_ctx, &err, rn)        == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_set;
+	if(rn_end(&rn_ctx, &err)            == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_set;
+
 	return(0);
+
+RN_NICE_ERROR_RETURN_rncmd_set:
+	printf("ERRO: [%d]:[%s]", err.err, err.msg);
+	return(-1);
 }
 
 int rncmd_lock(char *rn_name)
@@ -142,7 +153,10 @@ int main(int argc, char *argv[])
 				return(1);
 			}
 
-			rncmd_set(argv[2], atoi(argv[3]));
+			x = (RN_TYPE) atoi(argv[3]);
+			if(rncmd_set(argv[2], &x) == -1)
+				return(1);
+
 			break;
 
 		case 'l':
