@@ -35,8 +35,8 @@ int rncmd_delete(char *rn_name)
 
 int rncmd_getAndAdd(char *rn_name, RN_TYPE *rn)
 {
-	rn_ctx_t rn_ctx = {0};
-	rn_erro_t err = {0};
+	rn_ctx_t  rn_ctx = {0};
+	rn_erro_t err    = {0};
 	
 	if(rn_setup(rn_name, &rn_ctx, &err) == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_getAndAdd;
 	if(rn_start(&rn_ctx, &err)          == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_getAndAdd;
@@ -50,10 +50,21 @@ RN_NICE_ERROR_RETURN_rncmd_getAndAdd:
 	return(-1);
 }
 
-int rncmd_get(char *rn_name)
+int rncmd_get(char *rn_name, RN_TYPE *rn)
 {
+	rn_ctx_t  rn_ctx = {0};
+	rn_erro_t err    = {0};
 	
+	if(rn_setup(rn_name, &rn_ctx, &err) == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_get;
+	if(rn_start(&rn_ctx, &err)          == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_get;
+	if(rn_get(&rn_ctx, &err, rn)        == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_get;
+	if(rn_end(&rn_ctx, &err)            == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_get;
+
 	return(0);
+
+RN_NICE_ERROR_RETURN_rncmd_get:
+	printf("ERRO: [%d]:[%s]", err.err, err.msg);
+	return(-1);
 }
 
 int rncmd_set(char *rn_name, RN_TYPE x)
@@ -118,7 +129,9 @@ int main(int argc, char *argv[])
 			break;
 
 		case 'G':
-			rncmd_get(argv[2]);
+			if(rncmd_get(argv[2], &x) == -1)
+				return(1);
+
 			break;
 
 		case 's':
