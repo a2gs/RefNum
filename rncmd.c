@@ -23,8 +23,18 @@
 
 int rncmd_create(char *rn_name)
 {
+	rn_ctx_t  rn_ctx = {0};
+	rn_erro_t err    = {0};
 	
+	if(rn_setup(rn_name, &rn_ctx, &err) == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_create;
+	if(rn_start(&rn_ctx, &err)          == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_create;
+	if(rn_end(&rn_ctx, &err)            == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_create;
+
 	return(0);
+
+RN_NICE_ERROR_RETURN_rncmd_create:
+	printf("ERRO: [%d]:[%s]", err.err, err.msg);
+	return(-1);
 }
 
 int rncmd_delete(char *rn_name)

@@ -28,9 +28,9 @@ int rn_setup(char *rn_name, rn_ctx_t *rn_ctx, rn_erro_t *err)
 	return(RN_OK);
 }
 
-#define __RN_SET_ERROR(__rn_error_message__) {                                                                         \
+#define __RN_SET_ERROR(__rn_error_message__) {                                                                        \
 	char msgErr[RN_ERRO_MSG_SZ + 1] = {0};                                                                             \
-                                                                                                                       \
+	                                                                                                                   \
 	err->err = errno;                                                                                                  \
 	strerror_r(err->err, msgErr, RN_ERRO_MSG_SZ);                                                                      \
 	snprintf(err->msg, RN_ERRO_MSG_SZ, "RefNum#%d [%d] [%s]: [%s]", __LINE__, err->err, __rn_error_message__, msgErr); \
