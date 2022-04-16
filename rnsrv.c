@@ -32,15 +32,6 @@ void printHelp(char *exec)
 	return;
 }
 
-int main(int argc, char *argv[])
-{
-
-	return(0);
-}
-
-
-
-
 #define RUNNING_DIR  "./"
 #define LOCK_FILE    "servlock"
 
@@ -141,15 +132,17 @@ int daemonize(void)
 	return(1);
 }
 
-int srv(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-	#define MAXLINE 200
+	#define MAXLINE 30
 	pid_t p;
 	int listenfd = 0, connfd = 0, readRet = 0;
 	socklen_t len;
 	struct sockaddr_in servaddr, cliaddr;
 	char addStr[255 + 1] = {0};
 	char msg[MAXLINE] = {0}, *endLine = NULL;
+	rn_ctx_t  rn_ctx = {0};
+	rn_erro_t err = {0};
 
 	if(argc != 2){
 		fprintf(stderr, "%s PORT\n", argv[0]);
@@ -221,9 +214,21 @@ int srv(int argc, char *argv[])
 				endLine = strrchr(msg, '\r');
 				if(endLine != NULL) (*endLine) = '\0';
 
-				if(strncmp((char *)msg, "exit", 4) == 0) break; /* while() */
-
 				fprintf(log, "msg: [%s]\n", msg);
+
+				if(strncmp((char *)msg, "exit", 4) == 0) break;
+				 else if(strncmp((char *)msg, "CREATE", 6) == 0){
+				}else if(strncmp((char *)msg, "DELETE", 6) == 0){
+				}else if(strncmp((char *)msg, "GET",    3) == 0){
+				}else if(strncmp((char *)msg, "GETADD", 6) == 0){
+				}else if(strncmp((char *)msg, "SET",    3) == 0){
+				}else if(strncmp((char *)msg, "LOCK",   4) == 0){
+				}else if(strncmp((char *)msg, "UNLOCK", 6) == 0){
+				}
+
+				/* TODO: SEND RESPONSE */
+				
+				/* colcoar param (argv) para aceiotar comando de gerenciamento */
 			}
 
 			close(connfd);
