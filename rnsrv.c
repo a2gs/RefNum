@@ -248,7 +248,7 @@ int main(int argc, char *argv[])
 				else if((strncmp((char *)msg, "SET"   , 3) == 0) && (mngAllowed == '1')) rn_set(&rn_ctx, &err, &rn);
 				else if((strncmp((char *)msg, "LOCK"  , 4) == 0) && (mngAllowed == '1')) rn_lock(&rn_ctx, &err);
 				else if((strncmp((char *)msg, "UNLOCK", 6) == 0) && (mngAllowed == '1')) rn_unlock(&rn_ctx, &err);
-				else                                                                     strncpy(msg, "BAD CMD", MAXLINE);
+				else                                                                     {err.err = 1; strncpy(err.msg, "BAD CMD", MAXLINE);}
 
 				snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
 				fprintf(stderr, "%s\n", msg);
