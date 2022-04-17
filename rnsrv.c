@@ -147,6 +147,7 @@ int main(int argc, char *argv[])
 	char mngAllowed = 0;
 	char itMode = 0;
 	char *rnName = NULL;
+	int rnErro = 0;
 
 	if(argc != 5){
 		fprintf(stderr, "%s <RNREF> <PORT> <MNG> <IT>\n", argv[0]);
@@ -242,21 +243,24 @@ int main(int argc, char *argv[])
 				fprintf(stderr, "CMD: [%s]\n", msg);
 
 				if     ((strncmp((char *)msg, "exit"  , 4) == 0) && (mngAllowed == '1')) break;
-				else if((strncmp((char *)msg, "DELETE", 6) == 0) && (mngAllowed == '1')) rn_delete(&rn_ctx, &err);
-				else if( strncmp((char *)msg, "GET"   , 3) == 0)                         rn_get(&rn_ctx, &err, &rn);
-				else if( strncmp((char *)msg, "GETADD", 6) == 0)                         rn_addAndGet(&rn_ctx, &err, &rn);
-				else if((strncmp((char *)msg, "SET"   , 3) == 0) && (mngAllowed == '1')) rn_set(&rn_ctx, &err, &rn);
-				else if((strncmp((char *)msg, "LOCK"  , 4) == 0) && (mngAllowed == '1')) rn_lock(&rn_ctx, &err);
-				else if((strncmp((char *)msg, "UNLOCK", 6) == 0) && (mngAllowed == '1')) rn_unlock(&rn_ctx, &err);
-				else                                                                     {err.err = 1; strncpy(err.msg, "BAD CMD", MAXLINE);}
+				else if((strncmp((char *)msg, "DELETE", 6) == 0) && (mngAllowed == '1')) rnErro = rn_delete(&rn_ctx, &err);
+				else if( strncmp((char *)msg, "GET"   , 3) == 0)                         rnErro = rn_get(&rn_ctx, &err, &rn);
+				else if( strncmp((char *)msg, "GETADD", 6) == 0)                         rnErro = rn_addAndGet(&rn_ctx, &err, &rn);
+				else if((strncmp((char *)msg, "SET"   , 3) == 0) && (mngAllowed == '1')) rnErro = rn_set(&rn_ctx, &err, &rn);
+				else if((strncmp((char *)msg, "LOCK"  , 4) == 0) && (mngAllowed == '1')) rnErro = rn_lock(&rn_ctx, &err);
+				else if((strncmp((char *)msg, "UNLOCK", 6) == 0) && (mngAllowed == '1')) rnErro = rn_unlock(&rn_ctx, &err);
+				else                                                                     {err.err = 1; strncpy(err.msg, "BAD CMD", RN_ERRO_MSG_SZ);}
 
-				snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
+				if(rnErro == RN_ERRO) snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
+				else                  snprintf((char *)msg, MAXLINE, "%lld", rn);
+
 				fprintf(stderr, "%s\n", msg);
 
 				if(send(connfd, msg, strlen(msg), 0) == -1){
 					printf("ERRO: send() [%s].\n", strerror(errno));
 					break;
 				}
+
 			}while(itMode == '1');
 
 			shutdown(connfd, SHUT_RDWR);

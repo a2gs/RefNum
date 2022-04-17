@@ -38,7 +38,7 @@ int rn_setup(char *rn_name, rn_ctx_t *rn_ctx, rn_erro_t *err)
 
 	strncpy(rn_ctx->name, rn_name, RN_NAME_SZ);
 
-	__RN_SET_ERROR_OK;
+	/*__RN_SET_ERROR_OK;*/
 	return(RN_OK);
 }
 
@@ -84,7 +84,7 @@ int rn_start(rn_ctx_t *rn_ctx, rn_erro_t *err)
 
 	close(rn_ctx->fdmem);
 
-	__RN_SET_ERROR_OK;
+	/*__RN_SET_ERROR_OK;*/
 	return(RN_OK);
 }
 
@@ -93,7 +93,7 @@ int rn_end(rn_ctx_t *rn_ctx, rn_erro_t *err)
 	sem_close(rn_ctx->sem);
 	close(rn_ctx->fdmem);
 
-	__RN_SET_ERROR_OK;
+	/*__RN_SET_ERROR_OK;*/
 	return(RN_OK);
 }
 
@@ -104,7 +104,7 @@ int rn_delete(rn_ctx_t *rn_ctx, rn_erro_t *err)
 	sem_unlink(rn_ctx->name);
 	shm_unlink(rn_ctx->name);
 
-	__RN_SET_ERROR_OK;
+	/*__RN_SET_ERROR_OK;*/
 	return(RN_OK);
 }
 
@@ -118,7 +118,7 @@ int rn_addAndGet(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn)
 	if(rn_lock(rn_ctx, err) == RN_ERRO)
 		return(RN_ERRO);
 
-	__RN_SET_ERROR_OK;
+	/*__RN_SET_ERROR_OK;*/
 	return(RN_OK);
 }
 
@@ -126,7 +126,7 @@ int rn_get(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn)
 {
 	*rn = *rn_ctx->mem;
 
-	__RN_SET_ERROR_OK;
+	/*__RN_SET_ERROR_OK;*/
 	return(RN_OK);
 }
 
@@ -140,7 +140,7 @@ int rn_set(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn)
 	if(rn_lock(rn_ctx, err) == RN_ERRO)
 		return(RN_ERRO);
 
-	__RN_SET_ERROR_OK;
+	/*__RN_SET_ERROR_OK;*/
 	return(RN_OK);
 }
 
@@ -154,7 +154,7 @@ int rn_lock(rn_ctx_t *rn_ctx, rn_erro_t *err)
 		return(RN_ERRO);
 	}
 
-	__RN_SET_ERROR_OK;
+	/*__RN_SET_ERROR_OK;*/
 	return(RN_OK);
 }
 
@@ -168,6 +168,6 @@ int rn_unlock(rn_ctx_t *rn_ctx, rn_erro_t *err)
 		return(RN_ERRO);
 	}
 
-	__RN_SET_ERROR_OK;
+	/*__RN_SET_ERROR_OK;*/
 	return(RN_OK);
 }
