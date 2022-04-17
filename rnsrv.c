@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "%s <RNREF> <PORT> <MNG>\n", argv[0]);
 		fprintf(stderr, "\t<RNREF> RefNum name\n");
 		fprintf(stderr, "\t<PORT> Port to listening\n");
-		fprintf(stderr, "\t<MNG> 0 or 1. Server is able to execute or not management commands (create, delete, set, lock and unlock)\n");
+		fprintf(stderr, "\t<MNG> 0 or 1. Server is able to execute or not management commands (delete, set, lock and unlock)\n");
 		return(1);
 	}
 
@@ -244,8 +244,14 @@ int main(int argc, char *argv[])
 				fprintf(stderr, "msg: [%s]\n", msg);
 
 				if((strncmp((char *)msg, "exit", 4) == 0) && (mngAllowed == '1')) break;
-				 else if((strncmp((char *)msg, "CREATE", 6) == 0) && (mngAllowed == '1')){
-				}else if((strncmp((char *)msg, "DELETE", 6) == 0) && (mngAllowed == '1')){
+				/*
+				else if((strncmp((char *)msg, "CREATE", 6) == 0) && (mngAllowed == '1')){
+					if(rn_start(&rn_ctx, &err){
+					}
+				*/
+				else if((strncmp((char *)msg, "DELETE", 6) == 0) && (mngAllowed == '1')){
+
+					break;
 				}else if( strncmp((char *)msg, "GET",    3) == 0){
 				}else if( strncmp((char *)msg, "GETADD", 6) == 0){
 				}else if((strncmp((char *)msg, "SET",    3) == 0) && (mngAllowed == '1')){
@@ -257,8 +263,6 @@ int main(int argc, char *argv[])
 					printf("ERRO: send() [%s].\n", strerror(errno));
 					break;
 				}
-				
-				/* colcoar param (argv) para aceiotar comando de gerenciamento */
 			}
 
 			shutdown(connfd, SHUT_RDWR);
