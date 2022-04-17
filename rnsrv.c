@@ -36,18 +36,18 @@ void printHelp(char *exec)
 #define LOCK_FILE    "servlock"
 
 static int lockFd;
-static FILE *log;
+/*static FILE *log;*/
 
 int unlockAndDeleteLockFile(void)
 {
 	if(lockf(lockFd, F_ULOCK, 0) < 0){
-		fprintf(log, "Cannt unlock 'only one instance' file.\n");
+		fprintf(stderr, "Cannt unlock 'only one instance' file.\n");
 		return(-1);
 	}
 
 	close(lockFd);
 	if(unlink(LOCK_FILE) != 0){
-		fprintf(log, "Erro deleting lock file [%s].\n", LOCK_FILE);
+		fprintf(stderr, "Erro deleting lock file [%s].\n", LOCK_FILE);
 		return(-1);
 	}
 
@@ -58,7 +58,7 @@ void signal_handler(int sig)
 {
 	/* Qualquer sinal recebido ira terminar o server */
 
-	fprintf(log, "Got signal [%d]!\n", sig);
+	fprintf(stderr, "Got signal [%d]!\n", sig);
 
 	switch(sig){
 		case SIGHUP:
@@ -102,17 +102,17 @@ int daemonize(void)
 	/* Criando e travando arquivo de execucao unica */
 	lockFd = open(LOCK_FILE, O_RDWR|O_CREAT|O_EXCL, 0640);
 	if(lockFd == -1){
-		fprintf(log, "There is another instance already running.\n");
+		fprintf(stderr, "There is another instance already running.\n");
 		exit(-1);
 	}
 
 	if(lockf(lockFd, F_TLOCK, 0) < 0){
-		fprintf(log, "Cannt test 'only one instance' file.\n");
+		fprintf(stderr, "Cannt test 'only one instance' file.\n");
 		return(-1);
 	}
 
 	if(lockf(lockFd, F_LOCK, 0) < 0){
-		fprintf(log, "Cannt lock 'only one instance' file.\n");
+		fprintf(stderr, "Cannt lock 'only one instance' file.\n");
 		return(-1);
 	}
 
@@ -132,6 +132,12 @@ int daemonize(void)
 	return(1);
 }
 
+/*
+
+rnsrv <RNREF> <PORT> <MNG>
+
+*/
+
 int main(int argc, char *argv[])
 {
 	#define MAXLINE 30
@@ -143,28 +149,38 @@ int main(int argc, char *argv[])
 	char msg[MAXLINE] = {0}, *endLine = NULL;
 	rn_ctx_t  rn_ctx = {0};
 	rn_erro_t err = {0};
+	char mngAllowed = 0;
+	char *rnname = NULL;
 
-	if(argc != 2){
-		fprintf(stderr, "%s PORT\n", argv[0]);
+	if(argc != 4){
+		fprintf(stderr, "%s <RNREF> <PORT> <MNG>\n", argv[0]);
+		fprintf(stderr, "\t<RNREF> RefNum name\n");
+		fprintf(stderr, "\t<PORT> Port to listening\n");
+		fprintf(stderr, "\t<MNG> 0 or 1. Server is able to execute or not management commands (create, delete, set, lock and unlock)\n");
 		return(1);
 	}
 
+	rnname = argv[2];
+	mngAllowed = (argv[3][0] == '0' ? '0' : '1');
+
+	/*
 	if((log = fopen("./log.text", "wr")) == NULL){
 		fprintf(stderr, "Unable to open/create log.text! [%s].", strerror(errno));
 		return(1);
 	}
 	setbuf(log, NULL);
+	*/
 
-	fprintf(log, "StartUp!\n");
+	fprintf(stderr, "StartUp!\n");
 
 	if(daemonize() == -1){
-		fprintf(log, "Cannt daemonize server.\n");
+		fprintf(stderr, "Cannt daemonize server.\n");
 		return(1);
 	}
 
 	listenfd = socket(AF_INET, SOCK_STREAM, 0); /* For IPv6: AF_INET6 (but listen() must receives a sockaddr_in6 struct) */
 	if(listenfd == -1){
-		fprintf(log, "ERRO socket(): [%s].\n", strerror(errno));
+		fprintf(stderr, "ERRO socket(): [%s].\n", strerror(errno));
 		return(1);
 	}
 
@@ -174,13 +190,13 @@ int main(int argc, char *argv[])
 	servaddr.sin_port        = htons(atoi(argv[1]));
 
 	if(bind(listenfd, (const struct sockaddr *) &servaddr, sizeof(servaddr)) != 0){
-		fprintf(log, "ERRO bind(): [%s].\n", strerror(errno));
+		fprintf(stderr, "ERRO bind(): [%s].\n", strerror(errno));
 		unlockAndDeleteLockFile();
 		return(1);
 	}
 
 	if(listen(listenfd, 1024) != 0){
-		fprintf(log, "ERRO listen(): [%s].\n", strerror(errno));
+		fprintf(stderr, "ERRO listen(): [%s].\n", strerror(errno));
 		unlockAndDeleteLockFile();
 		return(1);
 	}
@@ -189,58 +205,76 @@ int main(int argc, char *argv[])
 		len = sizeof(cliaddr);
 		connfd = accept(listenfd, (struct sockaddr *) &cliaddr, &len);
 		if(connfd == -1){
-			fprintf(log, "ERRO accept(): [%s].\n", strerror(errno));
+			fprintf(stderr, "ERRO accept(): [%s].\n", strerror(errno));
 			return(1);
 		}
 
-		fprintf(log, "Connection from %s, port %d\n", inet_ntop(cliaddr.sin_family, &cliaddr.sin_addr, addStr, sizeof(addStr)), ntohs(cliaddr.sin_port));
+		fprintf(stderr, "Connection from %s, port %d\n", inet_ntop(cliaddr.sin_family, &cliaddr.sin_addr, addStr, sizeof(addStr)), ntohs(cliaddr.sin_port));
 		p = fork();
 
 		if(p == 0){ /* child */
+
+			if(rn_setup(rnname, &rn_ctx, &err) == RN_ERRO){
+				printf("ERRO rn_setup: [%d]:[%s]", err.err, err.msg);
+				return(1);
+			}
+
+			if(rn_start(&rn_ctx, &err) == RN_ERRO){
+				printf("ERRO rn_start: [%d]:[%s]", err.err, err.msg);
+				return(1);
+			}
+
 			while(1){
 				memset(msg, 0, MAXLINE);
 
 				readRet = recv(connfd, msg, MAXLINE, 0);
 				if(readRet == 0){
-					fprintf(log, "End of data\n");
+					fprintf(stderr, "End of data\n");
 					break;
 				}
 
 				if(readRet < 0){
-					fprintf(log, "ERRO recv(): [%s].\n", strerror(errno));
+					fprintf(stderr, "ERRO recv(): [%s].\n", strerror(errno));
 					break;
 				}
 
 				endLine = strrchr(msg, '\r');
 				if(endLine != NULL) (*endLine) = '\0';
 
-				fprintf(log, "msg: [%s]\n", msg);
+				fprintf(stderr, "msg: [%s]\n", msg);
 
-				if(strncmp((char *)msg, "exit", 4) == 0) break;
-				 else if(strncmp((char *)msg, "CREATE", 6) == 0){
-				}else if(strncmp((char *)msg, "DELETE", 6) == 0){
-				}else if(strncmp((char *)msg, "GET",    3) == 0){
-				}else if(strncmp((char *)msg, "GETADD", 6) == 0){
-				}else if(strncmp((char *)msg, "SET",    3) == 0){
-				}else if(strncmp((char *)msg, "LOCK",   4) == 0){
-				}else if(strncmp((char *)msg, "UNLOCK", 6) == 0){
+				if((strncmp((char *)msg, "exit", 4) == 0) && (mngAllowed == '1')) break;
+				 else if((strncmp((char *)msg, "CREATE", 6) == 0) && (mngAllowed == '1')){
+				}else if((strncmp((char *)msg, "DELETE", 6) == 0) && (mngAllowed == '1')){
+				}else if( strncmp((char *)msg, "GET",    3) == 0){
+				}else if( strncmp((char *)msg, "GETADD", 6) == 0){
+				}else if((strncmp((char *)msg, "SET",    3) == 0) && (mngAllowed == '1')){
+				}else if((strncmp((char *)msg, "LOCK",   4) == 0) && (mngAllowed == '1')){
+				}else if((strncmp((char *)msg, "UNLOCK", 6) == 0) && (mngAllowed == '1')){
+				}else strncpy(msg, "BAD CMD", MAXLINE);
+
+				if(send(connfd, msg, strlen(msg), 0) == -1){
+					printf("ERRO: send() [%s].\n", strerror(errno));
+					break;
 				}
-
-				/* TODO: SEND RESPONSE */
 				
 				/* colcoar param (argv) para aceiotar comando de gerenciamento */
 			}
 
-			close(connfd);
+			shutdown(connfd, SHUT_RDWR);
+
+			if(rn_end(&rn_ctx, &err)  == RN_ERRO){
+				printf("ERRO rn_end: [%d]:[%s]", err.err, err.msg);
+				return(1);
+			}
+
 			break; /* for() */
 
 		}else if(p == -1)
-			fprintf(log, "ERRO fork(): [%s].\n", strerror(errno));
+			fprintf(stderr, "ERRO fork(): [%s].\n", strerror(errno));
 
 		close(connfd);
 	}
-
-	fclose(log);
 
 	return(0);
 }
