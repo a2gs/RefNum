@@ -132,7 +132,7 @@ int daemonize(void)
 	return(1);
 }
 
-#define MAXLINE (50)
+#define MAXLINE (100)
 int main(int argc, char *argv[])
 {
 	pid_t p;
@@ -239,25 +239,40 @@ int main(int argc, char *argv[])
 				endLine = strrchr(msg, '\r');
 				if(endLine != NULL) (*endLine) = '\0';
 
-				fprintf(stderr, "msg: [%s]\n", msg);
+				fprintf(stderr, "CMD: [%s]\n", msg);
 
 				if((strncmp((char *)msg, "exit", 4) == 0) && (mngAllowed == '1')) break;
-				/* server already creates, if not exists, a 'new' refnum
-				else if((strncmp((char *)msg, "CREATE", 6) == 0) && (mngAllowed == '1')){
-				*/
+
 				else if((strncmp((char *)msg, "DELETE", 6) == 0) && (mngAllowed == '1')){
-					if(rn_delete(&rn_ctx, &err) == RN_ERRO) snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
-				}else if( strncmp((char *)msg, "GET",    3) == 0){
-					if(rn_get(&rn_ctx, &err, &rn) == RN_ERRO) snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
-				}else if( strncmp((char *)msg, "GETADD", 6) == 0){
-					if(rn_addAndGet(&rn_ctx, &err, &rn) == RN_ERRO) snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
-				}else if((strncmp((char *)msg, "SET",    3) == 0) && (mngAllowed == '1')){
-					if(rn_set(&rn_ctx, &err, &rn) == RN_ERRO) snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
-				}else if((strncmp((char *)msg, "LOCK",   4) == 0) && (mngAllowed == '1')){
-					if(rn_lock(&rn_ctx, &err) == RN_ERRO) snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
+					if(rn_delete(&rn_ctx, &err) == RN_ERRO)
+						snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
+
+				}else if(strncmp((char *)msg, "GET", 3) == 0){
+					if(rn_get(&rn_ctx, &err, &rn) == RN_ERRO)
+						snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
+
+				}else if(strncmp((char *)msg, "GETADD", 6) == 0){
+					if(rn_addAndGet(&rn_ctx, &err, &rn) == RN_ERRO)
+						snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
+
+				}else if((strncmp((char *)msg, "SET", 3) == 0) && (mngAllowed == '1')){
+					if(rn_set(&rn_ctx, &err, &rn) == RN_ERRO)
+						snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
+
+				}else if((strncmp((char *)msg, "LOCK", 4) == 0) && (mngAllowed == '1')){
+					if(rn_lock(&rn_ctx, &err) == RN_ERRO)
+						snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
+
 				}else if((strncmp((char *)msg, "UNLOCK", 6) == 0) && (mngAllowed == '1')){
-					if(rn_unlock(&rn_ctx, &err) == RN_ERRO) snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
-				}else strncpy(msg, "BAD CMD", MAXLINE);
+					if(rn_unlock(&rn_ctx, &err) == RN_ERRO)
+						snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
+
+				}else
+					strncpy(msg, "BAD CMD", MAXLINE);
+
+/*
+					snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);*/
+				fprintf(stderr, "%s\n", msg);
 
 				if(send(connfd, msg, strlen(msg), 0) == -1){
 					printf("ERRO: send() [%s].\n", strerror(errno));

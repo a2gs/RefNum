@@ -18,6 +18,19 @@
 
 #include "refnum.h"
 
+#define __RN_SET_ERROR(__rn_error_message__) {                                                                        \
+	char msgErr[RN_ERRO_MSG_SZ + 1] = {0};                                                                             \
+	                                                                                                                   \
+	err->err = errno;                                                                                                  \
+	strerror_r(err->err, msgErr, RN_ERRO_MSG_SZ);                                                                      \
+	snprintf(err->msg, RN_ERRO_MSG_SZ, "RefNum#%d [%d] [%s]: [%s]", __LINE__, err->err, __rn_error_message__, msgErr); \
+}
+
+#define __RN_SET_ERROR_OK {                 \
+	err->err = 0;                            \
+	strncpy(err->msg, "Ok", RN_ERRO_MSG_SZ); \
+}
+
 int rn_setup(char *rn_name, rn_ctx_t *rn_ctx, rn_erro_t *err)
 {
 	memset(rn_ctx, 0, sizeof(rn_ctx_t));
@@ -25,15 +38,8 @@ int rn_setup(char *rn_name, rn_ctx_t *rn_ctx, rn_erro_t *err)
 
 	strncpy(rn_ctx->name, rn_name, RN_NAME_SZ);
 
+	__RN_SET_ERROR_OK;
 	return(RN_OK);
-}
-
-#define __RN_SET_ERROR(__rn_error_message__) {                                                                        \
-	char msgErr[RN_ERRO_MSG_SZ + 1] = {0};                                                                             \
-	                                                                                                                   \
-	err->err = errno;                                                                                                  \
-	strerror_r(err->err, msgErr, RN_ERRO_MSG_SZ);                                                                      \
-	snprintf(err->msg, RN_ERRO_MSG_SZ, "RefNum#%d [%d] [%s]: [%s]", __LINE__, err->err, __rn_error_message__, msgErr); \
 }
 
 int rn_start(rn_ctx_t *rn_ctx, rn_erro_t *err)
@@ -78,6 +84,7 @@ int rn_start(rn_ctx_t *rn_ctx, rn_erro_t *err)
 
 	close(rn_ctx->fdmem);
 
+	__RN_SET_ERROR_OK;
 	return(RN_OK);
 }
 
@@ -86,6 +93,7 @@ int rn_end(rn_ctx_t *rn_ctx, rn_erro_t *err)
 	sem_close(rn_ctx->sem);
 	close(rn_ctx->fdmem);
 
+	__RN_SET_ERROR_OK;
 	return(RN_OK);
 }
 
@@ -96,6 +104,7 @@ int rn_delete(rn_ctx_t *rn_ctx, rn_erro_t *err)
 	sem_unlink(rn_ctx->name);
 	shm_unlink(rn_ctx->name);
 
+	__RN_SET_ERROR_OK;
 	return(RN_OK);
 }
 
@@ -109,6 +118,7 @@ int rn_addAndGet(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn)
 	if(rn_lock(rn_ctx, err) == RN_ERRO)
 		return(RN_ERRO);
 
+	__RN_SET_ERROR_OK;
 	return(RN_OK);
 }
 
@@ -116,6 +126,7 @@ int rn_get(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn)
 {
 	*rn = *rn_ctx->mem;
 
+	__RN_SET_ERROR_OK;
 	return(RN_OK);
 }
 
@@ -129,6 +140,7 @@ int rn_set(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn)
 	if(rn_lock(rn_ctx, err) == RN_ERRO)
 		return(RN_ERRO);
 
+	__RN_SET_ERROR_OK;
 	return(RN_OK);
 }
 
@@ -142,6 +154,7 @@ int rn_lock(rn_ctx_t *rn_ctx, rn_erro_t *err)
 		return(RN_ERRO);
 	}
 
+	__RN_SET_ERROR_OK;
 	return(RN_OK);
 }
 
@@ -155,5 +168,6 @@ int rn_unlock(rn_ctx_t *rn_ctx, rn_erro_t *err)
 		return(RN_ERRO);
 	}
 
+	__RN_SET_ERROR_OK;
 	return(RN_OK);
 }
