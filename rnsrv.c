@@ -132,36 +132,34 @@ int daemonize(void)
 	return(1);
 }
 
-/*
-
-rnsrv <RNREF> <PORT> <MNG>
-
-*/
-
+#define MAXLINE (50)
 int main(int argc, char *argv[])
 {
-	#define MAXLINE 30
 	pid_t p;
 	int listenfd = 0, connfd = 0, readRet = 0;
 	socklen_t len;
 	struct sockaddr_in servaddr, cliaddr;
 	char addStr[255 + 1] = {0};
-	char msg[MAXLINE] = {0}, *endLine = NULL;
+	char msg[MAXLINE + 1] = {0}, *endLine = NULL;
+	RN_TYPE rn = 0;
 	rn_ctx_t  rn_ctx = {0};
 	rn_erro_t err = {0};
 	char mngAllowed = 0;
-	char *rnname = NULL;
+	char itMode = 0;
+	char *rnName = NULL;
 
-	if(argc != 4){
-		fprintf(stderr, "%s <RNREF> <PORT> <MNG>\n", argv[0]);
-		fprintf(stderr, "\t<RNREF> RefNum name\n");
-		fprintf(stderr, "\t<PORT> Port to listening\n");
-		fprintf(stderr, "\t<MNG> 0 or 1. Server is able to execute or not management commands (delete, set, lock and unlock)\n");
+	if(argc != 5){
+		fprintf(stderr, "%s <RNREF> <PORT> <MNG> <IT>\n", argv[0]);
+		fprintf(stderr, "\t<RNREF> RefNum name.\n");
+		fprintf(stderr, "\t<PORT> Port to listening.\n");
+		fprintf(stderr, "\t<MNG> 0 or 1. Server is able to execute or not management commands (delete, set, lock and unlock).\n");
+		fprintf(stderr, "\t<IT> 0 or 1. Iterative mode. Server doesn't disconect until exit cmd.\n");
 		return(1);
 	}
 
-	rnname = argv[2];
+	rnName = argv[2];
 	mngAllowed = (argv[3][0] == '0' ? '0' : '1');
+	itMode = (argv[4][0] == '0' ? '0' : '1');
 
 	/*
 	if((log = fopen("./log.text", "wr")) == NULL){
@@ -214,7 +212,7 @@ int main(int argc, char *argv[])
 
 		if(p == 0){ /* child */
 
-			if(rn_setup(rnname, &rn_ctx, &err) == RN_ERRO){
+			if(rn_setup(rnName, &rn_ctx, &err) == RN_ERRO){
 				printf("ERRO rn_setup: [%d]:[%s]", err.err, err.msg);
 				return(1);
 			}
@@ -224,7 +222,7 @@ int main(int argc, char *argv[])
 				return(1);
 			}
 
-			while(1){
+			do{
 				memset(msg, 0, MAXLINE);
 
 				readRet = recv(connfd, msg, MAXLINE, 0);
@@ -244,26 +242,28 @@ int main(int argc, char *argv[])
 				fprintf(stderr, "msg: [%s]\n", msg);
 
 				if((strncmp((char *)msg, "exit", 4) == 0) && (mngAllowed == '1')) break;
-				/*
+				/* server already creates, if not exists, a 'new' refnum
 				else if((strncmp((char *)msg, "CREATE", 6) == 0) && (mngAllowed == '1')){
-					if(rn_start(&rn_ctx, &err){
-					}
 				*/
 				else if((strncmp((char *)msg, "DELETE", 6) == 0) && (mngAllowed == '1')){
-
-					break;
+					if(rn_delete(&rn_ctx, &err) == RN_ERRO) snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
 				}else if( strncmp((char *)msg, "GET",    3) == 0){
+					if(rn_get(&rn_ctx, &err, &rn) == RN_ERRO) snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
 				}else if( strncmp((char *)msg, "GETADD", 6) == 0){
+					if(rn_addAndGet(&rn_ctx, &err, &rn) == RN_ERRO) snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
 				}else if((strncmp((char *)msg, "SET",    3) == 0) && (mngAllowed == '1')){
+					if(rn_set(&rn_ctx, &err, &rn) == RN_ERRO) snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
 				}else if((strncmp((char *)msg, "LOCK",   4) == 0) && (mngAllowed == '1')){
+					if(rn_lock(&rn_ctx, &err) == RN_ERRO) snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
 				}else if((strncmp((char *)msg, "UNLOCK", 6) == 0) && (mngAllowed == '1')){
+					if(rn_unlock(&rn_ctx, &err) == RN_ERRO) snprintf((char *)msg, MAXLINE, "ERRO: [%d]:[%s]", err.err, err.msg);
 				}else strncpy(msg, "BAD CMD", MAXLINE);
 
 				if(send(connfd, msg, strlen(msg), 0) == -1){
 					printf("ERRO: send() [%s].\n", strerror(errno));
 					break;
 				}
-			}
+			}while(itMode == '1');
 
 			shutdown(connfd, SHUT_RDWR);
 
