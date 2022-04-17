@@ -118,7 +118,14 @@ int rncmd_lock(char *rn_name)
 
 int rncmd_unlock(char *rn_name)
 {
-	
+	rn_ctx_t  rn_ctx = {0};
+	rn_erro_t err    = {0};
+
+	if(rn_unlock(&rn_ctx, &err) == RN_ERRO){
+		printf("ERRO: [%d]:[%s]", err.err, err.msg);
+		return(-1);
+	}
+
 	return(0);
 }
 
