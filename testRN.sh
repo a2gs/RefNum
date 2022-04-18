@@ -16,11 +16,20 @@
 # Activate tracing:
 #set -x
 
-function test1()
+RNNAME='RNSAMPLETEST'
+
+function rncmd_run()
 {
-	echo "$1 sleep $2"
-	sleep $2
-	echo "$1 done!"
+$1 - name
+$2 - times
+$3 - sleep
+
+	for (( i=1; i<$2; i++ ))
+	do
+		echo "[$1] get add: "
+		$RNCMD_CMD -g $RNNAME
+		sleep $3
+	done
 }
 
 # ----------------------------------------------
@@ -54,31 +63,19 @@ fi
 # ----------------------------------------------
 
 echo "GETPID: $$"
-test1 "A" 7 &
+rncmd_run "A" 1 20 &
 PROC_A_PID=$!
 echo "PROC A PID: $PROC_A_PID"
 
 
 echo "GETPID: $$"
-test1 "B" 3 &
+rncmd_run "B" 5 4 &
 PROC_B_PID=$!
 echo "PROC B PID: $PROC_B_PID"
-
-echo "GETPID: $$"
-test1 "C" 5 &
-PROC_C_PID=$!
-echo "PROC C PID: $PROC_C_PID"
-
-echo "GETPID: $$"
-test1 "D" 1 &
-PROC_D_PID=$!
-echo "PROC D PID: $PROC_D_PID"
 
 
 wait $PROC_A_PID
 wait $PROC_B_PID
-wait $PROC_C_PID
-wait $PROC_D_PID
 
 
 echo "ALL DONE!"

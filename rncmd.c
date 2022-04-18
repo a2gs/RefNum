@@ -129,7 +129,6 @@ int rncmd_unlock(char *rn_name)
 	return(0);
 }
 
-
 void printHelp(char *exec)
 {
 	printf("Usage:\n");
