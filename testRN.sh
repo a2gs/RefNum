@@ -20,9 +20,9 @@ RNNAME='RNSAMPLETEST'
 
 function rncmd_run()
 {
-$1 - name
-$2 - times
-$3 - sleep
+# $1 - name
+# $2 - times
+# $3 - sleep
 
 	for (( i=1; i<$2; i++ ))
 	do
@@ -32,11 +32,14 @@ $3 - sleep
 	done
 }
 
+RFSRVPORT=46123
+RFSRVADDRESS='localhost'
+
 function rmcmd_runcli()
 {
-$1 - name
-$2 - times
-$3 - sleep
+# $1 - name
+# $2 - times
+# $3 - sleep
 
 	for (( i=1; i<$2; i++ ))
 	do
@@ -45,9 +48,6 @@ $3 - sleep
 		sleep $3
 	done
 }
-
-RFSRVPORT=46123
-RFSRVADDRESS='localhost'
 
 function rmcmd_runsrv()
 {
