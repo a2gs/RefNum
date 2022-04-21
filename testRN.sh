@@ -27,14 +27,36 @@ $3 - sleep
 	for (( i=1; i<$2; i++ ))
 	do
 		echo "[$1] get add: "
-		$RNCMD_CMD -g $RNNAME
+		$RNCMD_CMD -g "$RNNAME"
 		sleep $3
 	done
 }
 
+function rmcmd_runcli()
+{
+$1 - name
+$2 - times
+$3 - sleep
+
+	for (( i=1; i<$2; i++ ))
+	do
+		echo "[$1] get add: "
+		printf "GETADD" | $NETCAT_CMD "$RFSRVADDRESS" "$RFSRVPORT"
+		sleep $3
+	done
+}
+
+RFSRVPORT=46123
+RFSRVADDRESS='localhost'
+
+function rmcmd_runsrv()
+{
+	rnsrv "$RNNAME" "$RFSRVPORT" 1 0
+}
+
 # ----------------------------------------------
 
-RNCMD_CMD="rncmd"
+RNCMD_CMD='rncmd'
 
 if [ ! -e "$RNCMD_CMD" ];
 then
@@ -50,7 +72,7 @@ fi
 
 # ----------------------------------------------
 
-NETCAT_CMD="nc"
+NETCAT_CMD='nc'
 
 command -v "$NETCAT_CMD" >/dev/null 2>&1
 NC_EXIST=$?
@@ -62,17 +84,22 @@ fi
 
 # ----------------------------------------------
 
-echo "GETPID: $$"
 rncmd_run "A" 1 20 &
 PROC_A_PID=$!
 echo "PROC A PID: $PROC_A_PID"
 
-
-echo "GETPID: $$"
 rncmd_run "B" 5 4 &
 PROC_B_PID=$!
 echo "PROC B PID: $PROC_B_PID"
 
+if [ "$NC_EXIST" == 0 ];
+then
+	echo "Running server."
+	rmcmd_runsrv &
+
+	echo "Running client."
+	rmcmd_runcli "CLI A" 4 5
+fi 
 
 wait $PROC_A_PID
 wait $PROC_B_PID

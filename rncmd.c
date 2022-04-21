@@ -149,12 +149,12 @@ int main(int argc, char *argv[])
 	char opt = 0;
 	RN_TYPE x = 0;
 
-	opt = argv[1][1];
-
 	if(argc != 3 && argc != 4){
 		printHelp(argv[0]);
 		return(1);
 	}
+
+	opt = argv[1][1];
 
 	switch(opt){
 		case 'c':
