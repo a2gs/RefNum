@@ -105,6 +105,6 @@ fi
 
 wait $PROC_A_PID
 wait $PROC_B_PID
-wail $PROC_CLI_A_PID
+wait $PROC_CLI_A_PID
 
 echo "ALL DONE!"
