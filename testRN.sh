@@ -98,11 +98,13 @@ then
 	rmcmd_runsrv &
 
 	echo "Running client."
-	rmcmd_runcli "CLI A" 4 5
+	rmcmd_runcli "CLI A" 4 5 &
+	PROC_CLI_A_PID=$!
+	echo "PROC CLI A PID: $PROC_CLI_A_PID"
 fi 
 
 wait $PROC_A_PID
 wait $PROC_B_PID
-
+wail $PROC_CLI_A_PID
 
 echo "ALL DONE!"
