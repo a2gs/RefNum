@@ -23,11 +23,12 @@ function rncmd_run()
 # $1 - name
 # $2 - times
 # $3 - sleep
+# $4 - rfcmd option
 
 	for (( i=1; i<$2; i++ ))
 	do
 		echo "[$1] get add: "
-		$RNCMD_CMD -g "$RNNAME"
+		$RNCMD_CMD "$RNNAME" "$4"
 		sleep $3
 	done
 }
@@ -84,13 +85,17 @@ fi
 
 # ----------------------------------------------
 
-rncmd_run "A" 1 20 &
+rncmd_run 'A' 1 20 '-g' &
 PROC_A_PID=$!
 echo "PROC A PID: $PROC_A_PID"
 
-rncmd_run "B" 5 4 &
+rncmd_run 'B' 5 4 '-g' &
 PROC_B_PID=$!
 echo "PROC B PID: $PROC_B_PID"
+
+rncmd_runset 'C' 9 1 '-s 1000' &
+PROC_C_PID=$!
+echo "PROC C PID: $PROC_C_PID"
 
 if [ "$NC_EXIST" == 0 ];
 then
@@ -105,6 +110,7 @@ fi
 
 wait $PROC_A_PID
 wait $PROC_B_PID
+wait $PROC_C_PID
 wait $PROC_CLI_A_PID
 
 echo "ALL DONE!"
