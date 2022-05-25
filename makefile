@@ -16,7 +16,7 @@ RANLIB = ranlib
 CPPCHECK = cppcheck
 
 INCLUDEPATH = -I./
-LIBS = -lm -lpthread
+LIBS = -lm -lpthread -lrt
 LIBPATH = -L./
 
 all: clean librefnum rncmd rnsrv
