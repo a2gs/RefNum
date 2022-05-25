@@ -22,7 +22,7 @@
 	char msgErr[RN_ERRO_MSG_SZ + 1] = {0};                                                                             \
 	                                                                                                                   \
 	err->err = errno;                                                                                                  \
-	strerror_r(err->err, msgErr, RN_ERRO_MSG_SZ);                                                                      \
+	strncpy(msgErr, strerror_r(err->err, msgErr, RN_ERRO_MSG_SZ), RN_ERRO_MSG_SZ);                                     \
 	snprintf(err->msg, RN_ERRO_MSG_SZ, "RefNum#%d [%d] [%s]: [%s]", __LINE__, err->err, __rn_error_message__, msgErr); \
 }
 
@@ -49,7 +49,7 @@ int rn_start(rn_ctx_t *rn_ctx, rn_erro_t *err)
 	}
 
 	/* creating long long shared memory */
-	rn_ctx->fdmem = shm_open(rn_ctx->name, O_CREAT|O_EXCL, O_RDWR);
+	rn_ctx->fdmem = shm_open(rn_ctx->name, O_CREAT | O_EXCL | O_RDWR, S_IRUSR | S_IWUSR);
 	if(rn_ctx->fdmem == -1){
 		if(err != NULL)
 			__RN_SET_ERROR("shm_open");
