@@ -218,7 +218,7 @@ int main(int argc, char *argv[])
 				return(1);
 			}
 
-			if(rn_start(&rn_ctx, &err) == RN_ERRO){
+			if(rn_start(&rn_ctx, &err, 0) == RN_ERRO){
 				printf("ERRO rn_start: [%d]:[%s]", err.err, err.msg);
 				return(1);
 			}

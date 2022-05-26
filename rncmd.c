@@ -27,7 +27,7 @@ int rncmd_create(char *rn_name)
 	rn_erro_t err    = {0};
 	
 	if(rn_setup(rn_name, &rn_ctx, &err) == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_create;
-	if(rn_start(&rn_ctx, &err)          == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_create;
+	if(rn_start(&rn_ctx, &err, 1)       == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_create;
 	if(rn_end(&rn_ctx, &err)            == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_create;
 
 	return(0);
@@ -58,7 +58,7 @@ int rncmd_getAndAdd(char *rn_name, RN_TYPE *rn)
 	rn_erro_t err    = {0};
 	
 	if(rn_setup(rn_name, &rn_ctx, &err) == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_getAndAdd;
-	if(rn_start(&rn_ctx, &err)          == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_getAndAdd;
+	if(rn_start(&rn_ctx, &err, 0)       == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_getAndAdd;
 	if(rn_addAndGet(&rn_ctx, &err, rn)  == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_getAndAdd;
 	if(rn_end(&rn_ctx, &err)            == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_getAndAdd;
 
@@ -75,7 +75,7 @@ int rncmd_get(char *rn_name, RN_TYPE *rn)
 	rn_erro_t err    = {0};
 	
 	if(rn_setup(rn_name, &rn_ctx, &err) == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_get;
-	if(rn_start(&rn_ctx, &err)          == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_get;
+	if(rn_start(&rn_ctx, &err, 0)       == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_get;
 	if(rn_get(&rn_ctx, &err, rn)        == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_get;
 	if(rn_end(&rn_ctx, &err)            == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_get;
 
@@ -92,7 +92,7 @@ int rncmd_set(char *rn_name, RN_TYPE *rn)
 	rn_erro_t err    = {0};
 	
 	if(rn_setup(rn_name, &rn_ctx, &err) == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_set;
-	if(rn_start(&rn_ctx, &err)          == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_set;
+	if(rn_start(&rn_ctx, &err, 0)       == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_set;
 	if(rn_set(&rn_ctx, &err, rn)        == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_set;
 	if(rn_end(&rn_ctx, &err)            == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_set;
 

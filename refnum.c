@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <unistd.h>
+#include <stdint.h>
 #include <string.h>
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -36,10 +37,10 @@ int rn_setup(char *rn_name, rn_ctx_t *rn_ctx, rn_erro_t *err)
 	return(RN_OK);
 }
 
-int rn_start(rn_ctx_t *rn_ctx, rn_erro_t *err)
+int rn_start(rn_ctx_t *rn_ctx, rn_erro_t *err, uint8_t semopenFlag)
 {
 	/* creating semaphore */
-	rn_ctx->sem = sem_open(rn_ctx->name, O_CREAT|O_EXCL, O_RDWR, 0);
+	rn_ctx->sem = sem_open(rn_ctx->name, (semopenFlag ? O_CREAT|O_EXCL : 0), O_RDWR, 0);
 	if(rn_ctx->sem == SEM_FAILED){
 		if(err != NULL)
 			__RN_SET_ERROR("sem_open");
@@ -106,7 +107,7 @@ int rn_addAndGet(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn)
 
 	*rn = *rn_ctx->mem++;
 
-	if(rn_lock(rn_ctx, err) == RN_ERRO)
+	if(rn_unlock(rn_ctx, err) == RN_ERRO)
 		return(RN_ERRO);
 
 	return(RN_OK);
@@ -126,7 +127,7 @@ int rn_set(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn)
 
 	*rn_ctx->mem = *rn;
 
-	if(rn_lock(rn_ctx, err) == RN_ERRO)
+	if(rn_unlock(rn_ctx, err) == RN_ERRO)
 		return(RN_ERRO);
 
 	return(RN_OK);

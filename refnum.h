@@ -1,8 +1,9 @@
 /* Andre Augusto Giannotti Scota (https://sites.google.com/view/a2gs/) */
 
+#include <stdint.h>
 #include <semaphore.h>
 
-#define RN_OK		(0)
+#define RN_OK			(0)
 #define RN_ERRO		(1)
 
 #define RN_TYPE unsigned long long
@@ -22,7 +23,7 @@ typedef struct{
 }rn_ctx_t;
 
 int rn_setup(char *rn_name, rn_ctx_t *rn_ctx, rn_erro_t *err);
-int rn_start(rn_ctx_t *rn_ctx, rn_erro_t *err); /* open or create */
+int rn_start(rn_ctx_t *rn_ctx, rn_erro_t *err, uint8_t semopenFlag);
 int rn_end(rn_ctx_t *rn_ctx, rn_erro_t *err);
 int rn_delete(rn_ctx_t *rn_ctx, rn_erro_t *err);
 int rn_addAndGet(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn);
