@@ -28,7 +28,7 @@ function rncmd_run()
 	for (( i=1; i<$2; i++ ))
 	do
 		echo "[$1] get add: "
-		$RNCMD_CMD "$RNNAME" "$4"
+		$RNCMD_CMD "$4" "$RNNAME"
 		sleep $3
 	done
 }
@@ -85,6 +85,16 @@ fi
 
 # ----------------------------------------------
 
+"$RNCMD_CMD" -a "$RNNAME"
+if [ "$?" != "0" ];
+then
+	echo "Erro creating RefNum! Exit."
+	exit
+fi
+
+echo "RefNum created:"
+ls /dev/shm/*"$RNNAME"*
+
 rncmd_run 'A' 1 20 '-g' &
 PROC_A_PID=$!
 echo "PROC A PID: $PROC_A_PID"
@@ -114,3 +124,5 @@ wait $PROC_C_PID
 wait $PROC_CLI_A_PID
 
 echo "ALL DONE!"
+
+"$RNCMD_CMD" -d "$RNNAME"
