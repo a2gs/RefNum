@@ -33,7 +33,7 @@ int rncmd_create(char *rn_name)
 	return(0);
 
 RN_NICE_ERROR_RETURN_rncmd_create:
-	printf("ERRO: [%d]:[%s]", err.err, err.msg);
+	printf("ERRO: [%d]:[%s]\n", err.err, err.msg);
 	return(-1);
 }
 
@@ -48,7 +48,7 @@ int rncmd_delete(char *rn_name)
 	return(0);
 
 RN_NICE_ERROR_RETURN_rncmd_delete:
-	printf("ERRO: [%d]:[%s]", err.err, err.msg);
+	printf("ERRO: [%d]:[%s]\n", err.err, err.msg);
 	return(-1);
 }
 
@@ -65,7 +65,7 @@ int rncmd_getAndAdd(char *rn_name, RN_TYPE *rn)
 	return(0);
 
 RN_NICE_ERROR_RETURN_rncmd_getAndAdd:
-	printf("ERRO: [%d]:[%s]", err.err, err.msg);
+	printf("ERRO: [%d]:[%s]\n", err.err, err.msg);
 	return(-1);
 }
 
@@ -82,7 +82,7 @@ int rncmd_get(char *rn_name, RN_TYPE *rn)
 	return(0);
 
 RN_NICE_ERROR_RETURN_rncmd_get:
-	printf("ERRO: [%d]:[%s]", err.err, err.msg);
+	printf("ERRO: [%d]:[%s]\n", err.err, err.msg);
 	return(-1);
 }
 
@@ -99,7 +99,7 @@ int rncmd_set(char *rn_name, RN_TYPE *rn)
 	return(0);
 
 RN_NICE_ERROR_RETURN_rncmd_set:
-	printf("ERRO: [%d]:[%s]", err.err, err.msg);
+	printf("ERRO: [%d]:[%s]\n", err.err, err.msg);
 	return(-1);
 }
 
@@ -109,7 +109,7 @@ int rncmd_lock(char *rn_name)
 	rn_erro_t err    = {0};
 
 	if(rn_lock(&rn_ctx, &err) == RN_ERRO){
-		printf("ERRO: [%d]:[%s]", err.err, err.msg);
+		printf("ERRO: [%d]:[%s]\n", err.err, err.msg);
 		return(-1);
 	}
 
@@ -122,7 +122,7 @@ int rncmd_unlock(char *rn_name)
 	rn_erro_t err    = {0};
 
 	if(rn_unlock(&rn_ctx, &err) == RN_ERRO){
-		printf("ERRO: [%d]:[%s]", err.err, err.msg);
+		printf("ERRO: [%d]:[%s]\n", err.err, err.msg);
 		return(-1);
 	}
 

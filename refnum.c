@@ -37,10 +37,11 @@ int rn_setup(char *rn_name, rn_ctx_t *rn_ctx, rn_erro_t *err)
 	return(RN_OK);
 }
 
-int rn_start(rn_ctx_t *rn_ctx, rn_erro_t *err, uint8_t semopenFlag)
+int rn_start(rn_ctx_t *rn_ctx, rn_erro_t *err, uint8_t create)
 {
 	/* creating semaphore */
-	rn_ctx->sem = sem_open(rn_ctx->name, (semopenFlag ? O_CREAT|O_EXCL : 0), O_RDWR, 0);
+
+	rn_ctx->sem = sem_open(rn_ctx->name, (create ? O_CREAT | O_EXCL : 0) | O_RDWR, S_IRUSR | S_IWUSR, 0);
 	if(rn_ctx->sem == SEM_FAILED){
 		if(err != NULL)
 			__RN_SET_ERROR("sem_open");
@@ -50,7 +51,7 @@ int rn_start(rn_ctx_t *rn_ctx, rn_erro_t *err, uint8_t semopenFlag)
 	}
 
 	/* creating long long shared memory */
-	rn_ctx->fdmem = shm_open(rn_ctx->name, O_CREAT | O_EXCL | O_RDWR, S_IRUSR | S_IWUSR);
+	rn_ctx->fdmem = shm_open(rn_ctx->name, (create ? O_CREAT | O_EXCL : 0) | O_RDWR , S_IRUSR | S_IWUSR);
 	if(rn_ctx->fdmem == -1){
 		if(err != NULL)
 			__RN_SET_ERROR("shm_open");
