@@ -40,8 +40,8 @@ int rn_setup(char *rn_name, rn_ctx_t *rn_ctx, rn_erro_t *err)
 int rn_start(rn_ctx_t *rn_ctx, rn_erro_t *err, uint8_t create)
 {
 	/* creating semaphore */
-
-	rn_ctx->sem = sem_open(rn_ctx->name, (create ? O_CREAT | O_EXCL : 0) | O_RDWR, S_IRUSR | S_IWUSR, 0);
+	if(create == 1) rn_ctx->sem = sem_open(rn_ctx->name, O_CREAT | O_EXCL | O_RDWR, S_IRUSR | S_IWUSR, 1);
+	else            rn_ctx->sem = sem_open(rn_ctx->name, O_RDWR);
 	if(rn_ctx->sem == SEM_FAILED){
 		if(err != NULL)
 			__RN_SET_ERROR("sem_open");
@@ -106,7 +106,7 @@ int rn_addAndGet(rn_ctx_t *rn_ctx, rn_erro_t *err, RN_TYPE *rn)
 	if(rn_lock(rn_ctx, err) == RN_ERRO)
 		return(RN_ERRO);
 
-	*rn = *rn_ctx->mem++;
+	*rn = ++(*rn_ctx->mem);
 
 	if(rn_unlock(rn_ctx, err) == RN_ERRO)
 		return(RN_ERRO);
