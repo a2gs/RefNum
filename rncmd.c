@@ -185,8 +185,8 @@ int main(int argc, char *argv[])
 				return(1);
 			}
 
-			x = (RN_TYPE) atoi(argv[3]);
-			if(rncmd_set(argv[2], &x) == -1)
+			x = (RN_TYPE) atoi(argv[2]);
+			if(rncmd_set(argv[3], &x) == -1)
 				return(1);
 
 			break;
