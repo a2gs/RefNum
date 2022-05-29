@@ -108,12 +108,15 @@ int rncmd_lock(char *rn_name)
 	rn_ctx_t  rn_ctx = {0};
 	rn_erro_t err    = {0};
 
-	if(rn_lock(&rn_ctx, &err) == RN_ERRO){
-		printf("ERRO: [%d]:[%s]\n", err.err, err.msg);
-		return(-1);
-	}
+	if(rn_setup(rn_name, &rn_ctx, &err) == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_lock;
+	if(rn_start(&rn_ctx, &err, 0)       == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_lock;
+	if(rn_lock(&rn_ctx, &err)           == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_lock;
 
 	return(0);
+
+RN_NICE_ERROR_RETURN_rncmd_lock:
+	printf("ERRO: [%d]:[%s]\n", err.err, err.msg);
+	return(-1);
 }
 
 int rncmd_unlock(char *rn_name)
@@ -121,12 +124,15 @@ int rncmd_unlock(char *rn_name)
 	rn_ctx_t  rn_ctx = {0};
 	rn_erro_t err    = {0};
 
-	if(rn_unlock(&rn_ctx, &err) == RN_ERRO){
-		printf("ERRO: [%d]:[%s]\n", err.err, err.msg);
-		return(-1);
-	}
+	if(rn_setup(rn_name, &rn_ctx, &err) == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_unlock;
+	if(rn_start(&rn_ctx, &err, 0)       == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_unlock;
+	if(rn_unlock(&rn_ctx, &err)         == RN_ERRO) goto RN_NICE_ERROR_RETURN_rncmd_unlock;
 
 	return(0);
+
+RN_NICE_ERROR_RETURN_rncmd_unlock:
+	printf("ERRO: [%d]:[%s]\n", err.err, err.msg);
+	return(-1);
 }
 
 void printHelp(char *exec)
